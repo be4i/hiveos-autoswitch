@@ -7,9 +7,9 @@ using RestSharp;
 
 public class HiveOsClient
 {
-    private readonly string _url = "https://api.hiveos.farm/worker/eypiay.php";
-    private readonly string _publicKey = "631737cb7723a076dd3e04901a5fddb0d2e73144d474b7b963457236e19e9ba6";
-    private readonly string _secretKey = "ba27dec27996a20a59f61617eb89122ead71c82ae8821fb1638d9b69f290d133";
+    private const string _url = "https://api.hiveos.farm/worker/eypiay.php";
+    private const string _publicKey = "631737cb7723a076dd3e04901a5fddb0d2e73144d474b7b963457236e19e9ba6";
+    private const string _secretKey = "ba27dec27996a20a59f61617eb89122ead71c82ae8821fb1638d9b69f290d133";
 
     public HiveOsClient()
     {
