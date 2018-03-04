@@ -6,7 +6,7 @@ namespace hiveos_autoswitch
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            
         }
     }
 }
