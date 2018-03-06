@@ -22,7 +22,7 @@ namespace HiveOsAutomation
 
     public class RigConfiguration
     {
-        public int Id { get; set; }
+        public string[] Names { get; set; }
 
         public IEnumerable<RigAlgorithmConfiguration> Algorithms { get; set; }
     }
@@ -36,6 +36,9 @@ namespace HiveOsAutomation
         [JsonProperty("power_consumption")]
         public decimal PowerConsumption { get; set; }
 
+        [JsonProperty("overclock")]
+        public string Overclock { get; set; }
+
         public IEnumerable<RigAlgorithmTag> Tags  { get; set; }
     }
 
@@ -43,11 +46,8 @@ namespace HiveOsAutomation
     {
         public string[] Names { get; set; }
 
-        [JsonProperty("wallet_id")]
-        public int? WalletId { get; set; }
-        
-        [JsonProperty("overclock_id")]
-        public int? OverClockId { get; set; }
+        [JsonProperty("wallet")]
+        public string Wallet { get; set; }
 
         public eMinerSoftware Miner { get; set; }
     }

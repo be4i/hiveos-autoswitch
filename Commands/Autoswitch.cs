@@ -13,11 +13,12 @@ namespace HiveOsAutomation.Commands
             var whattomineApiClient = new HiveOsAutomation.ApiClients.Whattomine.Client(Program.Configuration.WhattomineApiEndPoint);
 
             var rigsStatus = hiveOsApiClient.GetRigs();
+            var wallets = hiveOsApiClient.GetWallets();
+            var overclocks = hiveOsApiClient.GetOverclocks();
 
             foreach(var rig in Program.Configuration.Rigs)
             {
                 var whattomineParams = new List<AlgorithmParams>();
-                var status = rigsStatus.Single(a => a.Id == rig.Id);
 
                 foreach(var algo in rig.Algorithms)
                 {
@@ -30,26 +31,35 @@ namespace HiveOsAutomation.Commands
 
                 var profits = 
                     whattomineApiClient.Get(whattomineParams)
-                    .OrderByDescending(a => a.Profitability24);
+                    .OrderByDescending(a => a.Profitability);
 
                 foreach (var profit in profits)
                 {
-                    var tag = 
-                         rig.Algorithms.Where(a => a.Type == profit.Algorithm)
-                        .SelectMany(a => a.Tags)
-                        .FirstOrDefault(a => a.Names.Contains(profit.Tag));
+                    var algo = 
+                         rig.Algorithms.Where(a => 
+                            a.Type == profit.Algorithm &&
+                            a.Tags.Any(b => b.Names.Contains(profit.Tag)))
+                        .FirstOrDefault();
 
-                    if(tag != null)
-                    {
-                        if(status.WalletId != tag.WalletId ||
-                           status.Miner != tag.Miner)
+                    var tag = algo?.Tags.Single(a => a.Names.Contains(profit.Tag));
+
+                    if(algo != null)
+                    { 
+                        var wallet = wallets.Single(a => a.Name == tag.Wallet);
+                        var overclock = overclocks.SingleOrDefault(a => a.Name == algo.Overclock);
+                        
+                        foreach(var status in rigsStatus.Where(a => rig.Names.Contains(a.Name)))
                         {
-                            hiveOsApiClient.MultiRocket(
-                                new int[] { rig.Id },
-                                tag.Miner,
-                                null,
-                                tag.WalletId,
-                                tag.OverClockId);
+                            if(status.WalletId != wallet.Id ||
+                               status.Miner != tag.Miner)
+                            {
+                                hiveOsApiClient.MultiRocket(
+                                    new [] { status.Id },
+                                    tag.Miner,
+                                    null,
+                                    wallet.Id,
+                                    overclock?.Id);
+                            }
                         }
 
                         break;

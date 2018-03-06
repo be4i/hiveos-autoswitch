@@ -36,7 +36,7 @@ namespace HiveOsAutomation.ApiClients.HiveOs
 
             if(!response.IsSuccessful)
             {
-                throw response.ErrorException;
+                throw new Exception(response.ErrorMessage);
             }
 
             var result = JObject.Parse(response.Content)["result"];
@@ -72,7 +72,7 @@ namespace HiveOsAutomation.ApiClients.HiveOs
 
             if(!response.IsSuccessful)
             {
-                throw response.ErrorException;
+                throw new Exception(response.Content);
             }
 
             var result = JObject.Parse(response.Content)["result"];
@@ -85,7 +85,30 @@ namespace HiveOsAutomation.ApiClients.HiveOs
             }
         }
 
-        public bool MultiRocket(int[] rigIds, eMinerSoftware? miner = null, eMinerSoftware? miner2 = null, int? walletId = null, int? overClockId = null)
+        public IEnumerable<OverclocksResult> GetOverclocks()
+        {
+            var payload = new Dictionary<string, string>();
+
+            payload.Add("method", "getOC");
+
+            var response = Request(payload);
+
+            if(!response.IsSuccessful)
+            {
+                throw new Exception(response.Content);
+            }
+
+            var result = JObject.Parse(response.Content)["result"];
+
+            foreach(var item in result)
+            {
+                var wallet = item.First;
+
+                yield return wallet.ToObject<OverclocksResult>();
+            }
+        }
+
+        public bool MultiRocket(IEnumerable<long> rigIds, eMinerSoftware? miner = null, eMinerSoftware? miner2 = null, int? walletId = null, int? overClockId = null)
         {
             var payload = new Dictionary<string, string>();
             
