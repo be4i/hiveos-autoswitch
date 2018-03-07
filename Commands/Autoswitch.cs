@@ -10,7 +10,7 @@ namespace HiveOsAutomation.Commands
         public int OnExecute(CommandLineApplication app, IConsole console)
         {
             var hiveOsApiClient = new HiveOsAutomation.ApiClients.HiveOs.Client(Program.Configuration.HiveOsApiEndPoint, Program.Configuration.HiveOsApiPublicKey, Program.Configuration.HiveOsApiSecretKey);
-            var whattomineApiClient = new HiveOsAutomation.ApiClients.Whattomine.Client(Program.Configuration.WhattomineApiEndPoint);
+            var whattomineApiClient = new HiveOsAutomation.ApiClients.Whattomine.Client(Program.Configuration.WhattomineApiEndPoint, Program.Configuration.WhattomineApiExchanges);
 
             var rigsStatus = hiveOsApiClient.GetRigs();
             var wallets = hiveOsApiClient.GetWallets();
@@ -25,13 +25,17 @@ namespace HiveOsAutomation.Commands
                     whattomineParams.Add(new AlgorithmParams
                     {
                         HashRate = algo.Hashrate,
-                        PowerConsumtion = algo.PowerConsumption
+                        PowerConsumtion = algo.PowerConsumption,
+                        Algorithm = algo.Type
                     });
                 }
 
                 var profits = 
                     whattomineApiClient.Get(whattomineParams)
-                    .OrderByDescending(a => a.Profitability);
+                    .Where(a => !a.Lagging)
+                    .OrderByDescending(a => a.Profitability)
+                    .ThenByDescending(a => a.Profitability24)
+                    .ThenByDescending(a => a.MarketCap);
 
                 foreach (var profit in profits)
                 {

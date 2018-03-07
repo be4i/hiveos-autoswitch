@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace HiveOsAutomation
 {
@@ -14,8 +15,11 @@ namespace HiveOsAutomation
         [JsonProperty("hiveos_api_secret_key")]
         public string HiveOsApiSecretKey { get; set; }
 
-        [JsonProperty("wahttomine_api_endpoint")]
+        [JsonProperty("whattomine_api_endpoint")]
         public string WhattomineApiEndPoint { get; set; }
+
+        [JsonProperty("whattomine_api_exchanges")]
+        public string[] WhattomineApiExchanges {get; set; }
 
         public IEnumerable<RigConfiguration> Rigs { get; set; }
     }

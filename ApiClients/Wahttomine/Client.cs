@@ -12,10 +12,12 @@ namespace HiveOsAutomation.ApiClients.Whattomine
     public class Client
     {
         private readonly string _endPoint;
+        private readonly string[] _exchanges;
         
-        public Client(string endPoint)
+        public Client(string endPoint, string[] exchanges)
         {
             _endPoint = endPoint;
+            _exchanges = exchanges;
         }
 
         public IEnumerable<Result> Get(IEnumerable<AlgorithmParams> algorithms)
@@ -32,14 +34,19 @@ namespace HiveOsAutomation.ApiClients.Whattomine
                 request.AddParameter(keyValue.Key, "true");
             }
 
-            request.AddParameter("factor[exchanges][]", "abucoins");
-            request.AddParameter("factor[exchanges][]", "bitfinex");
-            request.AddParameter("factor[exchanges][]", "bittrex");
-            request.AddParameter("factor[exchanges][]", "binance");
-            request.AddParameter("factor[exchanges][]", "cryptopia");
-            request.AddParameter("factor[exchanges][]", "hitbtc");
-            request.AddParameter("factor[exchanges][]", "poloniex");
-            request.AddParameter("factor[exchanges][]", "yobit");
+            // request.AddParameter("factor[exchanges][]", "abucoins");
+            // request.AddParameter("factor[exchanges][]", "bitfinex");
+            // request.AddParameter("factor[exchanges][]", "bittrex");
+            // request.AddParameter("factor[exchanges][]", "binance");
+            // request.AddParameter("factor[exchanges][]", "cryptopia");
+            // request.AddParameter("factor[exchanges][]", "hitbtc");
+            // request.AddParameter("factor[exchanges][]", "poloniex");
+            // request.AddParameter("factor[exchanges][]", "yobit");
+
+            foreach(var exhcange in _exchanges)
+            {
+                request.AddParameter("factor[exchanges][]", exhcange);
+            }
 
             var response = client.Execute(request);
             
