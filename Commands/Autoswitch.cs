@@ -18,17 +18,12 @@ namespace HiveOsAutomation.Commands
 
             foreach(var rig in Program.Configuration.Rigs)
             {
-                var whattomineParams = new List<AlgorithmParams>();
-
-                foreach(var algo in rig.Algorithms)
+                var whattomineParams = rig.Algorithms.Select(a => new AlgorithmParams
                 {
-                    whattomineParams.Add(new AlgorithmParams
-                    {
-                        HashRate = algo.Hashrate,
-                        PowerConsumtion = algo.PowerConsumption,
-                        Algorithm = algo.Type
-                    });
-                }
+                    HashRate = a.Hashrate,
+                    PowerConsumtion = a.PowerConsumption,
+                    Algorithm = a.Type
+                });
 
                 var profits = 
                     whattomineApiClient.Get(whattomineParams)
