@@ -4,7 +4,7 @@ namespace HiveOsAutomation.ApiClients.HiveOs
 {
     public class OverclocksResult
     {
-         [JsonProperty("id_wal")]
+         [JsonProperty("id_oc")]
         public int Id { get; set; }
 
         public string Name { get; set; }

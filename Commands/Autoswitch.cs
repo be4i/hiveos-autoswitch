@@ -54,14 +54,26 @@ namespace HiveOsAutomation.Commands
                         
                         foreach(var status in rigsStatus.Where(a => rig.Names.Contains(a.Name)))
                         {
-                            if(status.WalletId != wallet.Id ||
-                               status.Miner != tag.Miner)
+                            eMinerSoftware? miner = null;
+                            int? walletId = null;
+
+                            if(status.WalletId != wallet.Id)
+                            {
+                                walletId = wallet.Id;
+                            }
+
+                            if(status.Miner != tag.Miner)
+                            {
+                                miner = tag.Miner;
+                            }
+
+                            if(miner.HasValue || walletId.HasValue)
                             {
                                 hiveOsApiClient.MultiRocket(
                                     new [] { status.Id },
-                                    tag.Miner,
+                                    miner,
                                     null,
-                                    wallet.Id,
+                                    walletId,
                                     overclock?.Id);
                             }
                         }
